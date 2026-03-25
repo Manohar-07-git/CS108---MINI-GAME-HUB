@@ -1,24 +1,30 @@
 #!/bin/bash
 [[ ! -e users.tsv ]] && touch users.tsv
-cond(){if [[ "$username2" != "$username1" ]];then
+cond(){
+	authentication
+	username1=$username
+	authentication
+	username2=$username
+	if [[ "$username2" != "$username1" ]];then
         python3 game.py $username1 $username2
 else
-        {authentication
+	echo "both usernames cannot be same enter user2 again"
+		authentication
        username2=$username
        cond
-}
 
+}
 register(){
         echo "user do not exist  do you want to register(yes/no)?"
         read -r response
         if [[ "$response" == "yes" ]]; then
                 echo "set a password: "
                 read -r -s passwordn
-                echo "$username$'\t'$(echo "$passwordn" | sha256sum)" >> users.tsv
+                echo "$username\t$(echo "$passwordn" | sha256sum)" >> users.tsv
                 echo "updated user"
 		authentication
         elif [[ "$response" == "no" ]];then
-         func
+         authentication
         else
                 echo "input either yes or no"
                 register
@@ -37,18 +43,14 @@ if [[ "$(awk -F "\t" -v user=$username ' $1 == user {print $1}')" == "$username"
 		echo "user authenticated"
 		rm pass.txt
 	else 
-		{echo "incorrect password"
+			echo "incorrect password"
 		rm pass.txt
-		authentication}
+		authentication
 	fi
 else
 	register
 fi
 }
-authentication
-username1=$username
-authentication
-username2=$username
 cond
 	
 
