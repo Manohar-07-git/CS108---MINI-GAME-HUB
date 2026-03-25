@@ -8,9 +8,7 @@ cond(){
 	if [[ "$username2" != "$username1" ]];then
         python3 game.py $username1 $username2
 else
-	echo "both usernames cannot be same enter user2 again"
-		authentication
-       username2=$username
+	echo "both usernames cannot be same repeat the process again"
        cond
 	fi
 }
