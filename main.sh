@@ -1,41 +1,60 @@
 #!/bin/bash
-
-FILE="users.tsv"
-
-	if [[ ! -f $FILE ]]; then
-	touch users.tsv
+[[ ! -e users.tsv ]] && touch users.tsv
+cond(){
+	authentication
+	username1=$username
+	authentication
+	username2=$username
+	if [[ "$username2" != "$username1" ]];then
+        python3 game.py $username1 $username2
+else
+	echo "both usernames cannot be same enter user2 again"
+		authentication
+       username2=$username
+       cond
 	fi
+}
+register(){
+        echo "user do not exist  do you want to register(yes/no)?"
+        read -r response
+        if [[ "$response" == "yes" ]]; then
+                echo "set a password: "
+                read -r -s passwordn
+                echo -e "$username\t$(echo -n "$passwordn" | sha256sum | awk '{print $1}')" >> users.tsv
+                echo "updated user"
+        elif [[ "$response" == "no" ]];then
+         authentication
+        else
+                echo "input either yes or no"
+                register
+        fi
+	}
 
- hash_fun(){
-	 echo -n "$1" | sha256sum | awk '{print $1}'
-	 }
- 
- auth_player(){
-	 	local p_v="$1"
-		local user
-		local pwd
-		local h_in
-		local stored_hash
-		local stored_name
-		local fstored_hash 
-		local line
+authentication(){
+echo "enter username: "
+read -r username
 
-		while true; do
-		read -p "enter username for $p_v " user
+if [[ "$(awk -F "\t" -v user="$username" ' $1 == user {print $1}' users.tsv)" == "$username" ]];then
+	hpass=$(awk -F "\t" -v user="$username" ' $1 == user {print $2}' users.tsv)
+	echo "enter password: "
+        read -r -s password
+	if [[ "$( echo -n "$password" | sha256sum | awk '{print $1}' )" == "$hpass" ]];then
+		echo "user authenticated"
+	else 
+			echo "incorrect password"
+		authentication
+	fi
+else
+	register
+fi
+}
+cond
+	
 
-		stored_hash=""
-		while read -r line; do
-			stored_name=$(echo "$line" | awk '{print $1}')
-			
-			fstored_hash=$(echo "$line" | awk '{print $2}')
-			
-			if [[ "$stored_name" = "$user" ]]; then
-				stored_hash="$fstored_hash"
-				break
-			fi
-                        done < "$FILE"
-	        
 
-		}
+
+
+
+        
 
 
