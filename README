@@ -1,19 +1,18 @@
-i# Mini Game Hub
+# Mini Game Hub
 
-			sathwik & Manohar
+			Sathwik & Manohar
 
-## Project Overview
+# Project Overview
 
 A secure, multi-user game hub combining Bash scripting for authentication 
 and Python (Pygame) for gameplay. Two players log in, pick a game from a 
 menu, play through a graphical interface, and see results on a leaderboard.
 
-## How to Run
-bash
+# How to Run
 bash main.sh
 
 
-## Project Structure
+# Project Structure
 
 hub/
 ├── main.sh           # Entry point & authentication
@@ -41,7 +40,7 @@ hub/
 ## Dependencies
 
 - Python: `pygame-ce`, `numpy`, `matplotlib`
-- Bash: `sha256sum` (built-in on Linux/macOS)
+- Bash: `sha256sum` 
 
 ## Design Document
 
