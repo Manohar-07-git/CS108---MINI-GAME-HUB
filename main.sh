@@ -12,7 +12,7 @@ else
 		authentication
        username2=$username
        cond
-
+	fi
 }
 register(){
         echo "user do not exist  do you want to register(yes/no)?"
@@ -20,9 +20,8 @@ register(){
         if [[ "$response" == "yes" ]]; then
                 echo "set a password: "
                 read -r -s passwordn
-                echo "$username\t$(echo "$passwordn" | sha256sum)" >> users.tsv
+                echo -e "$username\t$(echo -n "$passwordn" | sha256sum | awk '{print $1}')" >> users.tsv
                 echo "updated user"
-		authentication
         elif [[ "$response" == "no" ]];then
          authentication
         else
@@ -35,16 +34,14 @@ authentication(){
 echo "enter username: "
 read -r username
 
-if [[ "$(awk -F "\t" -v user=$username ' $1 == user {print $1}')" == "$username" ]];then
-        awk -F "\t" -v user=$username ' $1 == user {print $2}' users.tsv > pass.txt
+if [[ "$(awk -F "\t" -v user="$username" ' $1 == user {print $1}' users.tsv)" == "$username" ]];then
+	hpass=$(awk -F "\t" -v user="$username" ' $1 == user {print $2}' users.tsv)
 	echo "enter password: "
         read -r -s password
-	if [[ "$( $password | sha256sum )" == "$(cat pass.txt)" ]];then
+	if [[ "$( echo -n "$password" | sha256sum | awk '{print $1}' )" == "$hpass" ]];then
 		echo "user authenticated"
-		rm pass.txt
 	else 
 			echo "incorrect password"
-		rm pass.txt
 		authentication
 	fi
 else
