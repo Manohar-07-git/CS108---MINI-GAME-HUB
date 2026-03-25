@@ -1,0 +1,61 @@
+i# Mini Game Hub
+
+			sathwik & Manohar
+
+## Project Overview
+
+A secure, multi-user game hub combining Bash scripting for authentication 
+and Python (Pygame) for gameplay. Two players log in, pick a game from a 
+menu, play through a graphical interface, and see results on a leaderboard.
+
+## How to Run
+```bash
+bash main.sh
+```
+
+## Project Structure
+```
+hub/
+├── main.sh           # Entry point & authentication
+├── game.py           # Game engine & menu
+├── leaderboard.sh    # Leaderboard display
+├── games/
+│   ├── tictactoe.py
+│   ├── othello.py
+│   └── connect4.py
+├── users.tsv         # Usernames & hashed passwords (auto-generated)
+└── history.csv       # Game result history (auto-generated)
+```
+
+## Features
+
+- Two-player login with SHA-256 hashed passwords
+- Registration for new users
+- Three games with full Pygame GUI:
+  - Tic-Tac-Toe (9×9 board, 5-in-a-row to win)
+  - Othello / Reversi (8×8 board)
+  - Connect Four (7×7 grid)
+- Persistent leaderboard with win/loss stats
+- Matplotlib charts for player and game statistics
+
+## Dependencies
+
+- Python: `pygame-ce`, `numpy`, `matplotlib`
+- Bash: `sha256sum` (built-in on Linux/macOS)
+
+## Design Document
+
+### System Design
+A base class `BoardGame` defines shared logic — player names, turn 
+switching, a NumPy board array, and an overridable win-check method. 
+Each game inherits from it and implements its own rules.
+
+### Implementation Plan
+
+| Week | Goal |
+|------|------|
+| Week 1 | `main.sh` authentication + base class skeleton |
+| Week 2 | Tic-Tac-Toe and Connect Four with Pygame GUI |
+| Week 3 | Othello, leaderboard, history recording |
+| Week 4 | Matplotlib charts, testing, report |
+
