@@ -52,10 +52,10 @@ Each game inherits from it and implements its own rules.
 
 ### Implementation Plan
 
-| Week | Goal |
-|------|------|
-| Week 1 | `main.sh` authentication + base class skeleton |
-| Week 2 | Tic-Tac-Toe and Connect Four with Pygame GUI |
-| Week 3 | Othello, leaderboard, history recording |
-| Week 4 | Matplotlib charts, testing, report |
+ Week , Goal 
+
+ Week 1 , `main.sh` authentication  
+ Week 2 , Tic-Tac-Toe and Connect Four with Pygame GUI 
+ Week 3 , Othello, leaderboard, history recording 
+ Week 4 , Matplotlib charts, testing, report 
 
