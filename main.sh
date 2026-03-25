@@ -1,41 +1,61 @@
 #!/bin/bash
+[[ ! -e users.tsv ]] && touch users.tsv
+cond(){if [[ "$username2" != "$username1" ]];then
+        python3 game.py $username1 $username2
+else
+        {authentication
+       username2=$username
+       cond
+}
 
-FILE="users.tsv"
+register(){
+        echo "user do not exist  do you want to register(yes/no)?"
+        read -r response
+        if [[ "$response" == "yes" ]]; then
+                echo "set a password: "
+                read -r -s passwordn
+                echo "$username$'\t'$(echo "$passwordn" | sha256sum)" >> users.tsv
+                echo "updated user"
+		authentication
+        elif [[ "$response" == "no" ]];then
+         func
+        else
+                echo "input either yes or no"
+                register
+        fi
+	}
 
-	if [[ ! -f $FILE ]]; then
-	touch users.tsv
+authentication(){
+echo "enter username: "
+read -r username
+
+if [[ "$(awk -F "\t" -v user=$username ' $1 == user {print $1}')" == "$username" ]];then
+        awk -F "\t" -v user=$username ' $1 == user {print $2}' users.tsv > pass.txt
+	echo "enter password: "
+        read -r -s password
+	if [[ "$( $password | sha256sum )" == "$(cat pass.txt)" ]];then
+		echo "user authenticated"
+		rm pass.txt
+	else 
+		{echo "incorrect password"
+		rm pass.txt
+		authentication}
 	fi
+else
+	register
+fi
+}
+authentication
+username1=$username
+authentication
+username2=$username
+cond
+	
 
- hash_fun(){
-	 echo -n "$1" | sha256sum | awk '{print $1}'
-	 }
- 
- auth_player(){
-	 	local p_v="$1"
-		local user
-		local pwd
-		local h_in
-		local stored_hash
-		local stored_name
-		local fstored_hash 
-		local line
 
-		while true; do
-		read -p "enter username for $p_v " user
 
-		stored_hash=""
-		while read -r line; do
-			stored_name=$(echo "$line" | awk '{print $1}')
-			
-			fstored_hash=$(echo "$line" | awk '{print $2}')
-			
-			if [[ "$stored_name" = "$user" ]]; then
-				stored_hash="$fstored_hash"
-				break
-			fi
-                        done < "$FILE"
-	        
 
-		}
+
+        
 
 
