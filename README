@@ -37,19 +37,18 @@ hub/
 - Persistent leaderboard with win/loss stats
 - Matplotlib charts for player and game statistics
 
-## Dependencies
+# Dependencies
 
 - Python: `pygame-ce`, `numpy`, `matplotlib`
 - Bash: `sha256sum` 
 
-## Design Document
-
-### System Design
+# Design Document
+# System Design
 A base class `BoardGame` defines shared logic — player names, turn 
 switching, a NumPy board array, and an overridable win-check method. 
 Each game inherits from it and implements its own rules.
 
-### Implementation Plan
+# Implementation Plan
 
  Week , Goal 
 
