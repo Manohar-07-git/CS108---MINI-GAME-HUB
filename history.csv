@@ -1,0 +1,12 @@
+Winner,Loser,Date,Game
+alice,bob,2026-04-01,TicTacToe
+bob,alice,2026-04-01,Connect4
+alice,charlie,2026-04-01,TicTacToe
+charlie,bob,2026-04-02,Othello
+david,alice,2026-04-02,Connect4
+alice,bob,2026-04-02,TicTacToe
+charlie,david,2026-04-02,Othello
+bob,charlie,2026-04-03,Connect4
+alice,david,2026-04-03,TicTacToe
+eve,alice,2026-04-04,Othello
+
