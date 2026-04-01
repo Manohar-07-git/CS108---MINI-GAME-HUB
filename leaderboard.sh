@@ -1,7 +1,7 @@
 #!/bin/bash
 stat=$1
 > leaderboard.txt
-n=$(wc -l users.tsv | awk 'print{$1}')
+n=$(wc -l users.tsv | awk '{print $1}')
 for k in tic-tac-toe othello connect4
 do
 echo "$k"
