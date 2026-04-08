@@ -1,26 +1,124 @@
 import pygame
 import sys
+import numpy as np
 
-# Initialize pygame
 pygame.init()
 
-# Set up the display
-screen = pygame.display.set_mode((640, 480))
-pygame.display.set_caption("My First Pygame Window")
+width = 600
+height = 600
+screen = pygame.display.set_mode((width, height))
+font = pygame.font.SysFont(None, 30)
 
-# Main loop
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+p1 = sys.argv[1]
+p2 = sys.argv[2]
 
-    # Fill the screen with a color
-    screen.fill((30, 144, 255))  # Dodger blue
 
-    # Update the display
-    pygame.display.flip()
+class Game:
+    def __init__(self, a, b, size):
+        self.p1 = a
+        self.p2 = b
+        self.turn = 1
+        self.board = np.zeros((size, size))
 
-# Quit pygame
-pygame.quit()
-sys.exit()
+    def switch(self):
+        if self.turn == 1:
+            self.turn = 2
+        else:
+            self.turn = 1
+
+
+class TicTacToe(Game):
+    def __init__(self, a, b):
+        super().__init__(a, b, 9)
+
+    def draw(self):
+        screen.fill((255, 255, 255))
+        gap = width // 9
+
+        for i in range(10):
+            pygame.draw.line(screen, (0, 0, 0), (0, i * gap), (width, i * gap))
+            pygame.draw.line(screen, (0, 0, 0), (i * gap, 0), (i * gap, height))
+
+        for i in range(9):
+            for j in range(9):
+                if self.board[i][j] == 1:
+                    pygame.draw.circle(screen, (255, 0, 0), (j * gap + gap//2, i * gap + gap//2), 12)
+                if self.board[i][j] == 2:
+                    pygame.draw.circle(screen, (0, 0, 255), (j * gap + gap//2, i * gap + gap//2), 12)
+
+        pygame.display.update()
+
+    def check(self, player):
+        b = self.board
+
+        for i in range(9):
+            for j in range(5):
+                if np.all(b[i, j:j+5] == player):
+                    return True
+                if np.all(b[j:j+5, i] == player):
+                    return True
+
+        for i in range(5):
+            for j in range(5):
+                if np.all(np.diag(b[i:i+5, j:j+5]) == player):
+                    return True
+                if np.all(np.diag(np.fliplr(b[i:i+5, j:j+5])) == player):
+                    return True
+
+        return False
+
+    def play(self):
+        run = True
+        gap = width // 9
+
+        while run:
+            self.draw()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    x, y = pygame.mouse.get_pos()
+                    r = y // gap
+                    c = x // gap
+
+                    if self.board[r][c] == 0:
+                        self.board[r][c] = self.turn
+
+                        if self.check(self.turn):
+                            run = False
+                        else:
+                            self.switch()
+
+            if np.all(self.board != 0):
+                run = False
+
+        pygame.time.delay(1000)
+
+
+def menu():
+    run = True
+
+    while run:
+        screen.fill((200, 200, 200))
+        t = font.render("Press 1 for TicTacToe | 2 to Quit", True, (0, 0, 0))
+        screen.blit(t, (100, 250))
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    g = TicTacToe(p1, p2)
+                    g.play()
+                if event.key == pygame.K_2:
+                    pygame.quit()
+                    sys.exit()
+
+
+menu()
