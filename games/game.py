@@ -2,8 +2,9 @@ from sys import exit
 import numpy as np
 import pygame as pg 
 import subprocess
-#player1=sys.argv[1]
-#player2=sys.argv[2]
+import sys
+player1=sys.argv[1]
+player2=sys.argv[2]
 class Game:
     def __init__(self, p1, p2, sym1, sym2, n):
         self.p1 = p1
@@ -47,7 +48,8 @@ while True:
         if event.type==pg.MOUSEBUTTONDOWN:
             mouse_pos=pg.mouse.get_pos()
             if tic_rect.collidepoint(mouse_pos): 
-                #subprocess.run(["py -3.11","tictactoe.py",player1,player2])
+                print("running")
+                subprocess.run(["py","-3.11","./tictactoe.py", player1,player2])
                 pg.quit()
                 exit()
             if oth_rect.collidepoint(mouse_pos): 

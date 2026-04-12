@@ -134,10 +134,10 @@ class Game:
 
 pygame.init()
 screen=pygame.display.set_mode((1000,800))
-pygame.display.set_caption("TIC TAC TOE")
+pygame.display.set_caption("CONNECT 4")
 clock=pygame.time.Clock()
 
-player=Game(p1,p2,0,1,10,5)
+player=Game(p1,p2,0,1,7,4)
 
 ticbg=pygame.image.load('../media/ticbg.png').convert()
 ticbg=pygame.transform.scale(ticbg,(1000,800))
@@ -154,10 +154,10 @@ o_surf=pygame.transform.scale(o_surf,(80,80))
 x_rect=[]
 surf=[]
 
-for j in range(10):
+for j in range(player.a):
     xv_rect=[]
     surfv=[]
-    for i in range(10):
+    for i in range(player.a):
         rect_x=x_surf.get_rect(topleft=(j*80,i*80))
         xv_rect.append(rect_x)
         surfv.append(empty_surf)
@@ -172,23 +172,25 @@ while True:
 
         if event.type==pygame.MOUSEBUTTONDOWN and player.wincond()==0:
             mouse_pos=pygame.mouse.get_pos()
-            for j in range(10):
-                for i in range(10):
+            for j in range(player.a):
+                for i in range(player.a):
                     if x_rect[i][j].collidepoint(mouse_pos):
-                        if surf[i][j] is empty_surf:
-                            current = player.turn()
-
-                            if current==0:    
-                                surf[i][j]=x_surf
-                                player.n[i][j]=1
-                            else:
-                                surf[i][j]=o_surf
-                                player.n[i][j]=2
+                        for h in range(i+1):
+                            if surf[h][j] is empty_surf:
+                                current = player.turn()
+                                if current==0:    
+                                    surf[h][j]=x_surf
+                                    player.n[h][j]=1
+                                    break
+                                else:
+                                    surf[h][j]=o_surf
+                                    player.n[h][j]=2
+                                    break
 
     screen.blit(ticbg,(0,0))
 
-    for i in range(10):
-        for j in range(10):
+    for i in range(player.a):
+        for j in range(player.a):
             screen.blit(surf[i][j],x_rect[i][j])
 
     if player.wincond():
