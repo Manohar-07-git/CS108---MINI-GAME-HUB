@@ -142,13 +142,13 @@ player=Game(p1,p2,0,1,7,4)
 ticbg=pygame.image.load('../media/ticbg.png').convert()
 ticbg=pygame.transform.scale(ticbg,(1000,800))
 
-empty_surf=pygame.image.load('../media/empty.png').convert()
+empty_surf=pygame.image.load('../media/emptyc4.png').convert()
 empty_surf=pygame.transform.scale(empty_surf,(80,80))
 
-x_surf=pygame.image.load('../media/x.png').convert()
+x_surf=pygame.image.load('../media/disc1.png').convert()
 x_surf=pygame.transform.scale(x_surf,(80,80))
 
-o_surf=pygame.image.load('../media/o.png').convert()
+o_surf=pygame.image.load('../media/disc2.png').convert()
 o_surf=pygame.transform.scale(o_surf,(80,80))
 
 x_rect=[]
@@ -158,7 +158,7 @@ for j in range(player.a):
     xv_rect=[]
     surfv=[]
     for i in range(player.a):
-        rect_x=x_surf.get_rect(topleft=(j*80,i*80))
+        rect_x=x_surf.get_rect(topleft=(220+(player.a-i-1)*80,120+(player.a-j-1)*80))
         xv_rect.append(rect_x)
         surfv.append(empty_surf)
     x_rect.append(xv_rect)
