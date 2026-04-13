@@ -27,9 +27,9 @@ class othello:
         #update initial positions
         self.size=size
         self.board=np.zeros((size,size),dtype=int)
-        self.board[size//2,size//2]=2
+        self.board[size//2,size//2]=1
         self.board[size//2-1,size//2-1]=1
-        self.board[size//2,size//2-1]=1
+        self.board[size//2,size//2-1]=2
         self.board[size//2-1,size//2]=2
         
     def validmoves(self, player):
