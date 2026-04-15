@@ -5,13 +5,13 @@ import sys
 p1=sys.argv[1]
 p2=sys.argv[2]
 class Game:
-    def __init__(self, p1, p2, sym1, sym2, n,c):
+    def __init__(self, p1, p2, sym1, sym2, n,c,state):
         self.p1 = p1
         self.p2 = p2
         self.sym1 = sym1
         self.sym2 = sym2
         self.n = np.zeros((n, n), dtype=int)
-        self.state = 0  
+        self.state = state  
         self.c = c
         self.a=n
 
@@ -60,7 +60,7 @@ class othello:
                 return (p, q)
         return (-1, -1)
 
-    def inbounds(self,l,m):
+    def inbounds(self,l,m)  :
         if l>=0 and l<self.size and m>=0 and m <self.size:
             return True
         else:
@@ -76,16 +76,16 @@ class othello:
                     p2+=1
         return (p1,p2)
     
-    def wincond(self):
+    def wincond(self,curr):
         #when the game ends
-        for player in [1, 2]:
-            choices=self.validmoves(player)
-            for i in range(self.size):
-                for j in range(self.size):
-                    for p in range(self.size):
-                        for q in range(self.size):
-                            if choices[p,q]==1:
-                                return False
+        
+        choices=self.validmoves(curr+1)
+        for i in range(self.size):
+            for j in range(self.size):
+                for p in range(self.size):
+                    for q in range(self.size):
+                        if choices[p,q]==1:
+                            return False
         return True
     def makemove(self,a,b,player):
         if self.validmoves(player)[a,b]==1:
@@ -120,7 +120,7 @@ screen=pygame.display.set_mode((1000,800))
 pygame.display.set_caption("OTHELLO")
 clock=pygame.time.Clock()
 othboard=othello(8)
-player=Game(p1,p2,1,2,8,4)
+player=Game(p1,p2,1,2,8,4,0)
 ticbg=pygame.image.load('../media/ticbg.png').convert()
 ticbg=pygame.transform.scale(ticbg,(1000,800))
 
@@ -151,21 +151,23 @@ while True:
         if event.type==pygame.QUIT:
             pygame.quit()
             exit()
-        if event.type==pygame.MOUSEBUTTONDOWN and othboard.wincond()==False:
+        
+        if event.type==pygame.MOUSEBUTTONDOWN and othboard.wincond(player.state)==False:
             mouse_pos=pygame.mouse.get_pos()
             for j in range(player.a):
                 for i in range(player.a):
                     if x_rect[i][j].collidepoint(mouse_pos):
                         current=player.state
-                        if othboard.validmoves(current+1)[i,j]==1:
-                            othboard.makemove(i,j,current+1)
-                            player.turn()
-                            for d in range(player.a):
-                                for s in range(player.a):
-                                    if othboard.board[d,s]==1:
-                                        surf[d][s] = x_surf
-                                    if othboard.board[d,s]==2:
-                                        surf[d][s] = o_surf 
+                        if 1 == 1:
+                            if othboard.validmoves(current+1)[i,j]==1:
+                                othboard.makemove(i,j,current+1)
+                                player.turn()
+                                for d in range(player.a):
+                                    for s in range(player.a):
+                                        if othboard.board[d,s]==1:
+                                            surf[d][s] = x_surf
+                                        if othboard.board[d,s]==2:
+                                            surf[d][s] = o_surf 
     screen.blit(ticbg,(0,0))
     for d in range(player.a):
         for s in range(player.a):
@@ -181,9 +183,10 @@ while True:
     texts=fonts.render(f"player1 : {l1} player2 : {l2}",False,(255,255,255))
     texts_rect=texts.get_rect(center=(500,100))
     screen.blit(texts,texts_rect)
-    if othboard.wincond():
+
+    if othboard.wincond(player.state):
         pl1,pl2=othboard.count()
-        if pl1>pl2:
+        if pl1>pl2: 
             font=pygame.font.Font(None,100)
             text=font.render(f"{p1} wins", False,(255,255,255))
             text_rect=text.get_rect(center=(400,400))
