@@ -1,19 +1,19 @@
-from sys import exit
 import numpy as np
 import pygame 
-import subprocess
+from sys import exit
 import sys
-player1=sys.argv[1]
-player2=sys.argv[2]
+p1=sys.argv[1]
+p2=sys.argv[2]
+from game import Game
 
-class Game:
-    def __init__(self, p1, p2, sym1, sym2, n,c,state):
+'''class Game:
+    def __init__(self, p1, p2, sym1, sym2, n,c):
         self.p1 = p1
         self.p2 = p2
         self.sym1 = sym1
         self.sym2 = sym2
         self.n = np.zeros((n, n), dtype=int)
-        self.state = state
+        self.state = 0  
         self.c = c
         self.a=n
 
@@ -129,53 +129,71 @@ class Game:
         font=pygame.font.Font(None,100)
         self.text=font.render("TIE", False,(0,255,255))
         self.text_rect=self.text.get_rect(center=(400,400))
-        return True
+        return True'''
 
 
-if __name__ == "__main__":
-    pygame.init()
-    screen=pygame.display.set_mode((1000,800))
-    pygame.display.set_caption("GAME HUB!!!")
-    clock=pygame.time.Clock()
-    bg_surf=pygame.image.load('../media/background.png').convert()
-    bg_surf=pygame.transform.scale(bg_surf,(1000,800))
-    tic_surf=pygame.image.load('../media/tic tac toe.png').convert()
-    tic_surf=pygame.transform.scale(tic_surf,(200,200))
-    tic_rect=tic_surf.get_rect(topleft=(125,400))
-    oth_surf=pygame.image.load('../media/othello.png')
-    oth_surf=pygame.transform.scale(oth_surf,(200,200))
-    oth_rect=oth_surf.get_rect(topleft=(375,400))
-    c4_surf=pygame.image.load('../media/connect 4.png').convert()
-    c4_surf=pygame.transform.scale(c4_surf,(200,200))
-    c4_rect=c4_surf.get_rect(topleft=(625,400))
-    font=pygame.font.Font(None, 100)
-    text=font.render("GAME HUB", False,(0,255,255))
-    text_rect=text.get_rect(center=(500,300))
-    while True:
-        for event in pygame.event.get():
-            if event.type==pygame.QUIT:
-                pygame.quit()
-                exit()
-            if event.type==pygame.MOUSEBUTTONDOWN:
-                mouse_pos=pygame.mouse.get_pos()
-                if tic_rect.collidepoint(mouse_pos): 
-                    print("running")
-                    subprocess.run(["python3","./tictactoe.py", player1,player2])
-                    pygame.quit()
-                    exit()
-                if oth_rect.collidepoint(mouse_pos): 
-                    subprocess.run(["python3","othello.py",player1,player2])
-                    pygame.quit()
-                    exit()
-                if c4_rect.collidepoint(mouse_pos): 
-                    subprocess.run(["python3","./connect4.py",player1,player2])
-                    pygame.quit()
-                    exit()
+pygame.init()
+screen=pygame.display.set_mode((1000,800))
+pygame.display.set_caption("CONNECT 4")
+clock=pygame.time.Clock()
 
-        screen.blit(bg_surf,(0,0))
-        screen.blit(tic_surf,tic_rect)
-        screen.blit(oth_surf,oth_rect)
-        screen.blit(c4_surf,c4_rect)
-        screen.blit(text,text_rect)
-        pygame.display.update() 
-        clock.tick(60)
+player=Game(p1,p2,0,1,7,4,0)
+
+ticbg=pygame.image.load('../media/ticbg.png').convert()
+ticbg=pygame.transform.scale(ticbg,(1000,800))
+
+empty_surf=pygame.image.load('../media/emptyc4.png').convert()
+empty_surf=pygame.transform.scale(empty_surf,(80,80))
+
+x_surf=pygame.image.load('../media/disc1.png').convert()
+x_surf=pygame.transform.scale(x_surf,(80,80))
+
+o_surf=pygame.image.load('../media/disc2.png').convert()
+o_surf=pygame.transform.scale(o_surf,(80,80))
+
+x_rect=[]
+surf=[]
+
+for j in range(player.a):
+    xv_rect=[]
+    surfv=[]
+    for i in range(player.a):
+        rect_x=x_surf.get_rect(topleft=(220+(player.a-i-1)*80,120+(player.a-j-1)*80))
+        xv_rect.append(rect_x)
+        surfv.append(empty_surf)
+    x_rect.append(xv_rect)
+    surf.append(surfv)
+
+while True:
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            pygame.quit()
+            exit()
+
+        if event.type==pygame.MOUSEBUTTONDOWN and player.wincond()==0:
+            mouse_pos=pygame.mouse.get_pos()
+            for j in range(player.a):
+                for i in range(player.a):
+                    if x_rect[i][j].collidepoint(mouse_pos):
+                        for h in range(i+1):
+                            if surf[h][j] is empty_surf:
+                                current = player.turn()
+                                if current==0:    
+                                    surf[h][j]=x_surf
+                                    player.n[h][j]=1
+                                    break
+                                else:
+                                    surf[h][j]=o_surf
+                                    player.n[h][j]=2
+                                    break
+
+    screen.blit(ticbg,(0,0))
+
+    for i in range(player.a):
+        for j in range(player.a):
+            screen.blit(surf[i][j],x_rect[i][j])
+
+    if player.wincond():
+        screen.blit(player.text,player.text_rect)
+    pygame.display.update()
+    clock.tick(60)
