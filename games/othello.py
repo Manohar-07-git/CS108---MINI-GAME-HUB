@@ -121,20 +121,22 @@ pygame.display.set_caption("OTHELLO")
 clock=pygame.time.Clock()
 othboard=othello(8)
 player=Game(p1,p2,1,2,8,4,0)
-ticbg=pygame.image.load('../media/ticbg.png').convert()
+ticbg=pygame.image.load('./media/ticbg.png').convert()
 ticbg=pygame.transform.scale(ticbg,(1000,800))
 
-empty_surf=pygame.image.load('../media/emptyc4.png').convert()
+empty_surf=pygame.image.load('./media/emptyc4.png').convert()
 empty_surf=pygame.transform.scale(empty_surf,(80,80))
 
-x_surf=pygame.image.load('../media/disc1.png').convert()
+x_surf=pygame.image.load('./media/disc1.png').convert()
 x_surf=pygame.transform.scale(x_surf,(80,80))
 
-o_surf=pygame.image.load('../media/disc2.png').convert()
+o_surf=pygame.image.load('./media/disc2.png').convert()
 o_surf=pygame.transform.scale(o_surf,(80,80))
 
+n_surf = pygame.image.load('./media/empty.png')
+n_surf = pygame.transform.scale(n_surf,(80,80))
 x_rect=[]
-surf=[]
+surf=[] 
 
 for j in range(player.a):
     xv_rect=[]
@@ -166,6 +168,8 @@ while True:
                                         surf[d][s] = x_surf
                                     if othboard.board[d,s]==2:
                                         surf[d][s] = o_surf 
+    
+
     screen.blit(ticbg,(0,0))
     for d in range(player.a):
         for s in range(player.a):
@@ -176,6 +180,11 @@ while True:
     for i in range(player.a):
         for j in range(player.a):
             screen.blit(surf[i][j],x_rect[i][j])
+    for i in range(player.a):
+        for j in range(player.a):
+            if othboard.validmoves(player.state + 1)[i,j] == 1: 
+                screen.blit(n_surf,x_rect[i][j])
+
     l1,l2=othboard.count()       
     fonts=pygame.font.Font(None,100)
     texts=fonts.render(f"player1 : {l1} player2 : {l2}",False,(255,255,255))

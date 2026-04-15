@@ -7,23 +7,25 @@ player1=sys.argv[1]
 player2=sys.argv[2]
 
 class Game:
-    def __init__(self, p1, p2, sym1, sym2, n,c,state):
-        self.p1 = p1
-        self.p2 = p2
-        self.sym1 = sym1
-        self.sym2 = sym2
+
+    def __init__(self,p1,p2, n,c,state):
+        self.p1 =p1
+        self.p2=p2
         self.n = np.zeros((n, n), dtype=int)
         self.state = state
         self.c = c
         self.a=n
+
+               
 
     def turn(self):
         current = self.state
         self.state = 1 - self.state
         return current
 
-    def wincond(self):
+    def wincond(self,screen,x_rect):
         #horizontal
+
         for i in range(self.a):
             for j in range((self.a-self.c)+1):
                 countx=0
@@ -137,15 +139,15 @@ if __name__ == "__main__":
     screen=pygame.display.set_mode((1000,800))
     pygame.display.set_caption("GAME HUB!!!")
     clock=pygame.time.Clock()
-    bg_surf=pygame.image.load('../media/background.png').convert()
+    bg_surf=pygame.image.load('media/background.png').convert()
     bg_surf=pygame.transform.scale(bg_surf,(1000,800))
-    tic_surf=pygame.image.load('../media/tic tac toe.png').convert()
+    tic_surf=pygame.image.load('media/tic tac toe.png').convert()
     tic_surf=pygame.transform.scale(tic_surf,(200,200))
     tic_rect=tic_surf.get_rect(topleft=(125,400))
-    oth_surf=pygame.image.load('../media/othello.png')
+    oth_surf=pygame.image.load('media/othello.png')
     oth_surf=pygame.transform.scale(oth_surf,(200,200))
     oth_rect=oth_surf.get_rect(topleft=(375,400))
-    c4_surf=pygame.image.load('../media/connect 4.png').convert()
+    c4_surf=pygame.image.load('media/connect 4.png').convert()
     c4_surf=pygame.transform.scale(c4_surf,(200,200))
     c4_rect=c4_surf.get_rect(topleft=(625,400))
     font=pygame.font.Font(None, 100)
@@ -160,17 +162,20 @@ if __name__ == "__main__":
                 mouse_pos=pygame.mouse.get_pos()
                 if tic_rect.collidepoint(mouse_pos): 
                     print("running")
-                    subprocess.run(["python3","./tictactoe.py", player1,player2])
                     pygame.quit()
+                    
+                    subprocess.run(["python3","./tictactoe.py", player1,player2])
                     exit()
                 if oth_rect.collidepoint(mouse_pos): 
-                    subprocess.run(["python3","othello.py",player1,player2])
                     pygame.quit()
+                    
+                    subprocess.run(["python3","othello.py",player1,player2])
                     exit()
                 if c4_rect.collidepoint(mouse_pos): 
-                    subprocess.run(["python3","./connect4.py",player1,player2])
                     pygame.quit()
-                    exit()
+
+                    subprocess.run(["python3","./connect4.py",player1,player2])
+                    exit()                    
 
         screen.blit(bg_surf,(0,0))
         screen.blit(tic_surf,tic_rect)
