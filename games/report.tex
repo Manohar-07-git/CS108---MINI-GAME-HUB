@@ -128,30 +128,15 @@ Game outcomes are persistently tracked and formatted using a dedicated Bash scri
     \item \textbf{Formatting:} Passes the final sorted dataset through a secondary \texttt{awk} command to print a neatly aligned ASCII table for the user interface.
 \end{itemize}
 \section{Hurdles Faced and Resolutions}
-Developing a cohesive Mini-Game Hub presented several technical and architectural challenges. Below are the primary hurdles encountered and the strategies used to overcome them:
-
-\begin{itemize}
-    \item \textbf{Designing a Flexible Generic Game Class:} 
-    Initially, creating a single base class that could accommodate the varied logic, board sizes, and win conditions of different games (e.g., a $10 \times 10$ Tic-Tac-Toe versus other mini-games) was difficult. 
-    \textit{Resolution:} We overcame this by leveraging object-oriented design principles, specifically using abstract classes and generics. By defining a generic game loop with abstract methods like \texttt{initializeBoard()}, \texttt{processTurn()}, and \texttt{checkWinCondition()}, each specific game could inherit the core structure while fully customizing its internal logic.
-    
-    \item \textbf{Secure Authentication and Session State:}
-    Managing user sessions, ensuring that a user remains logged in across multiple game instances, and securely handling passwords posed a significant hurdle.
-    \textit{Resolution:} We implemented a centralized Authentication Manager using the Singleton pattern to ensure only one session state exists at a time. To secure user data, we utilized basic hashing algorithms for password storage rather than saving plain text, referencing standard security practices.
-    
-    \item \textbf{Dynamic Leaderboard Sorting:}
-    The leaderboard needed to dynamically sort players based on varying metrics (e.g., total wins, win ratio, or high scores) across multiple different games.
-    \textit{Resolution:} We tackled this by implementing custom Comparator interfaces. This allowed the leaderboard module to fetch raw player statistics and sort the data structures on the fly depending on the specific game context requested by the user.
-\end{itemize}
-
+wrote pygame window for each game.py,tictactoe.py,connect4.py and Othello.py initially and changed all of it at the end so that tictactoe.py,connect4.py and Othello.py only have classes and game,.py takes care of remaining logic in display of GUI
+included loops also initially in winconditions then changed all of it to slicing and vectorization.
+\\
+struggled to make frontend and backend to ensure soomth working flow .
 \section{Future Improvements (With 10 Additional Hours)}
-Given an additional 10 hours of development time, we would focus on expanding the project's scalability and user experience in the following ways:
-
-\begin{enumerate}
-    \item \textbf{Graphical User Interface (GUI):} Transition the current command-line interface to a fully interactive GUI. This would involve utilizing libraries to create clickable game boards, visual login screens, and formatted leaderboard tables, vastly improving user engagement.
-    \item \textbf{Networked Multiplayer Capabilities:} Implement socket programming to allow two users on different machines to play against each other in real-time, moving beyond local hot-seat multiplayer.
-    \item \textbf{Persistent Database Integration:} Replace the current file-based data storage system with a relational database (such as SQLite or PostgreSQL) to manage user accounts and leaderboard statistics more robustly and efficiently.
-\end{enumerate}
+will do more structured and well divided classes
+some time complexity exists due to multiple lopp in loops on pygame will try to reduce it
+use more aesthetic images
+add some play with computer mode which does a random move out of valid ones
 
 \clearpage
 

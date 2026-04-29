@@ -108,7 +108,7 @@ while True:
                                             player.switchturn()
 
                     if not tic.wincond(player.board,player.turn):
-                        screen.blit(tic_bg,(0,0))
+                        screen.blit(ticbg,(0,0))
 
                         for i in range(10):
                             for j in range(10):

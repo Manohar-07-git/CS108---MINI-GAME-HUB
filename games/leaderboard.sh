@@ -1,43 +1,43 @@
 #!/bin/bash
+
 metric=${1:-none}
+
 printf "%-10s %-12s %-5s %-7s %-5s %-5s\n" "User" "Game" "Wins" "Losses" "Ties" "Ratio"
 echo "---------------------------------------------------"
+
 tr -d '\r' < history.csv | awk -F',' '
-NR > 1 {
+{
+    key1 = $2","$5   # player1,game
+    key2 = $3","$5   # player2,game
+
     if ($1 == "Tie") {
-        ties[$2","$5]++
-        ties[$3","$5]++
+        ties[key1]++
+        ties[key2]++
     } else {
         wins[$1","$5]++
         losses[$2","$5]++
     }
 }
 END {
-    for (key in wins) {
+    # collect all unique keys
+    for (k in wins) all[k]
+    for (k in losses) all[k]
+    for (k in ties) all[k]
+
+    # process each user-game pair
+    for (key in all) {
         split(key, arr, ",")
         user = arr[1]
         game = arr[2]
-        w = wins[key]
+
+        w = (key in wins) ? wins[key] : 0
         l = (key in losses) ? losses[key] : 0
         t = (key in ties) ? ties[key] : 0
+
+        # consistent ratio calculation
         ratio = (l == 0) ? w : w / l
+
         print user "," game "," w "," l "," t "," ratio
-    }
-    for (key in losses) {
-        if (!(key in wins)) {
-            split(key, arr, ",")
-            user = arr[1]
-            game = arr[2]
-            l = losses[key]
-            t = (key in ties) ? ties[key] : 0
-            print user "," game ",0," l "," t ",0"
-        }
-    }
-    for (key in ties) {
-        if (!(key in wins) && !(key in losses)) {
-            split(key, arr, ",")
-            print arr[1] "," arr[2] ",0,0," ties[key] ",0"
-        }
     }
 }
 ' | {
