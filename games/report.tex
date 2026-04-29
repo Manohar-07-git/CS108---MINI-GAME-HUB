@@ -1,0 +1,171 @@
+\documentclass{report}
+\usepackage[utf8]{inputenc}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[rightcaption]{sidecap}
+\usepackage{verbatim}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage [ a4paper , hmargin =1.2 in , bottom =1.5 in ] { geometry }
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+\graphicspath{{./media/}}
+
+\begin{document}
+
+\author{Sathwik \& Manohar \thanks {https://www.pygame.org/wiki/tutorials \& https://docs.python.org/3/}}
+\title{CS108 Mini Game Hub: Final Report}
+\maketitle
+\tableofcontents
+\clearpage
+
+\section{Intro}
+In this report you will know about how we used libraries , A description of all features implemented , Hurdles faced and how we overcame them.
+\section{External Libraries}
+\begin{enumerate}
+    \item \textbf{Numpy}  : NumPy is used solely to initialize the game board as a 2D array of zeros with np.zeros((n, n), dtype=int), where each cell stores 0 (empty), 1 (player 1), or 2 (player 2). The win condition logic then iterates over this matrix to count consecutive matching values across rows, columns, and diagonals. \\
+    \\
+    \item \textbf{pygame} : Pygame serves as the entire graphics and interaction engine — it renders the game hub window, loads and scales background/game images, and handles mouse click events to launch individual games. It draws the board, animates win lines, and displays winner/tie text using fonts and surfaces. \\
+    \\
+    \item \textbf{subprocess} : Subprocess is used to launch each individual game (tictactoe, othello, connect4) as separate Python processes, capture their return codes to determine the winner, run a bash leaderboard script, and trigger a plot script , it  connects all components of the game hub together. \\ 
+    \\
+    \item \textbf{sys} : Sys is used to accept command-line arguments (sys.argv) for player names at startup, and to cleanly terminate the program via sys.exit() when a player chooses not to continue after a game. \\ 
+    \\
+    \item \textbf{time} : Time is used solely to fetch the current date via time.strftime\("\%Y-\%m-\%d"\) when recording match results into the history CSV file. \\
+    \\
+    \item \textbf{pathlib} : Pathlib is used solely to define the history CSV file path via Path("history.csv"), ensuring cross-platform file path handling when appending match results to the history file. \\
+    \\
+    \item \textbf{matplotlib} : For showing A bar chart of the Top 5 Players by total win count, A pie chart of the Most Played Games by frequency in history.csv .
+\end{enumerate}
+\clearpage
+\section{Features implemented}
+\subsection{Authentication (main.sh)}
+\begin{itemize}
+    \item Two-player login with SHA-256 hashed passwords stored in users.tsv \\
+    \item Registration for new users, with re-prompt on wrong password 
+\end{itemize}
+\subsection{Game Menu (game.py)}
+\begin{itemize}
+    \item Pygame GUI hub to select from 3 games, with both usernames passed as arguments \\ 
+\end{itemize}
+\subsection{Games}
+\begin{itemize}
+    \item Tic-Tac-Toe on 10x10 board, 5-in-a-row to win \\ 
+    \item Othello on 8x8 with disc flipping logic and turn skipping \\ 
+    \item Connect Four on 7x7 with gravity-based coin dropping, 4-in-a-row to win 
+\end{itemize}
+\subsection{Technical Requirements}
+\begin{itemize}
+    \item All boards as NumPy arrays; win checks via array slicing, not manual loops \\ 
+    \item Full Pygame GUI for every game, no terminal gameplay \\ 
+    \item Base class with shared logic; each game inherits from it in a separate file.
+\end{itemize}
+\subsection{Analytics}
+\begin{itemize}
+    \item Append winner, loser, date, game to history.csv after each game \\ 
+    \item Call leaderboard.sh to display wins/losses/ratio per player per game, sorted by a GUI-selected metric \\ 
+    \item Matplotlib bar chart (top 5 players) and pie chart (most played games)
+\end{itemize}
+\clearpage
+% part 3 left 
+\section{Explanation of Implimentation of code}
+
+\subsection{Authentication System (\texttt{main.sh})}
+The gateway to the game hub is a Bash-based authentication system that ensures only registered users can access the games. 
+\begin{itemize}
+    \item \textbf{User Management:} Utilizes a \texttt{users.tsv} file as a lightweight database to store usernames and SHA-256 hashed passwords.
+    \item \textbf{Dual Authentication:} The \texttt{cond} function requires two distinct users to log in consecutively. If a user does not exist, they are seamlessly routed to a registration flow.
+    \item \textbf{Session Launch:} Once two unique players are authenticated, the script launches the Python game environment (\texttt{game.py}), passing the authenticated usernames as command-line arguments.
+\end{itemize}
+
+\subsection{Game Hub and Core Engine (\texttt{game.py} \& Base Class)}
+The primary interface is a Pygame-based hub that acts as a centralized launcher and manager for the mini-games.
+\begin{itemize}
+    \item \textbf{Generic Base Class:} A shared player and board management system provides an $n \times n$ NumPy array for grid representation. Turn management avoids complex conditionals by using a mathematical toggle: subtracting the current turn from 3 (switching 1 to 2, and 2 to 1).
+    \item \textbf{Main Menu Loop:} Initializes the display and waits for mouse click events on bounding rectangles associated with game icons. Selecting a game enters its specific, isolated game loop.
+    \item \textbf{Endgame State:} Upon a win or tie, the hub displays a results screen and provides interactive UI elements that use \texttt{subprocess} calls to trigger external shell scripts for leaderboard generation.
+\end{itemize}
+
+\section{Game Logic Implementations}
+
+\subsection{Tic-Tac-Toe (\texttt{tictactoe.py})}
+\begin{itemize}
+    \item \textbf{Board Mechanics:} Played on an expanded $10 \times 10$ NumPy grid mapped to screen rectangles.
+    \item \textbf{Win Condition:} Requires 5-in-a-row to win. The logic converts the board to a boolean mask for the current player and uses NumPy slicing to check for overlapping sequences of five across all rows, columns, and both diagonals.
+\end{itemize}
+
+\subsection{Connect 4 (\texttt{connect4.py})}
+\begin{itemize}
+    \item \textbf{Board Mechanics:} Played on a standard $7 \times 7$ grid. The move logic simulates gravity by iterating through the selected column and placing the piece in the lowest available row index.
+    \item \textbf{Win Condition:} Similar to Tic-Tac-Toe, it relies on boolean masks and NumPy slicing to detect 4-in-a-row patterns in all horizontal, vertical, and diagonal directions.
+\end{itemize}
+
+\subsection{Othello / Reversi (\texttt{Othello.py})}
+\begin{itemize}
+    \item \textbf{Valid Move Detection:} Uses an $8 \times 8$ board. The \texttt{validmoves} function scans empty cells and checks all eight cardinal and ordinal directions using a \texttt{checkfun} helper to see if placing a piece traps opponent pieces.
+    \item \textbf{Piece Flipping:} The \texttt{makemove} function verifies legality, places the piece, and iterates backward along valid vectors to flip trapped opposing pieces.
+    \item \textbf{Win Condition:} The game concludes when \texttt{wincond} determines neither player has any valid moves remaining. The winner is decided by a final board count.
+\end{itemize}
+
+\section{Leaderboard Management (\texttt{leaderboard.sh})}
+Game outcomes are persistently tracked and formatted using a dedicated Bash script.
+\begin{itemize}
+    \item \textbf{Data Parsing:} Reads from a \texttt{history.csv} log. It uses \texttt{awk} to sanitize carriage returns, iterate through match data, and tally wins, losses, and ties for every user-game pair.
+    \item \textbf{Metric Calculation:} Computes a win-loss ratio, safely handling edge cases (e.g., zero losses).
+    \item \textbf{Dynamic Sorting:} Accepts a command-line argument (\texttt{wins}, \texttt{losses}, or \texttt{ratio}) to dynamically sort the parsed data structures before outputting them.
+    \item \textbf{Formatting:} Passes the final sorted dataset through a secondary \texttt{awk} command to print a neatly aligned ASCII table for the user interface.
+\end{itemize}
+\section{Hurdles Faced and Resolutions}
+Developing a cohesive Mini-Game Hub presented several technical and architectural challenges. Below are the primary hurdles encountered and the strategies used to overcome them:
+
+\begin{itemize}
+    \item \textbf{Designing a Flexible Generic Game Class:} 
+    Initially, creating a single base class that could accommodate the varied logic, board sizes, and win conditions of different games (e.g., a $10 \times 10$ Tic-Tac-Toe versus other mini-games) was difficult. 
+    \textit{Resolution:} We overcame this by leveraging object-oriented design principles, specifically using abstract classes and generics. By defining a generic game loop with abstract methods like \texttt{initializeBoard()}, \texttt{processTurn()}, and \texttt{checkWinCondition()}, each specific game could inherit the core structure while fully customizing its internal logic.
+    
+    \item \textbf{Secure Authentication and Session State:}
+    Managing user sessions, ensuring that a user remains logged in across multiple game instances, and securely handling passwords posed a significant hurdle.
+    \textit{Resolution:} We implemented a centralized Authentication Manager using the Singleton pattern to ensure only one session state exists at a time. To secure user data, we utilized basic hashing algorithms for password storage rather than saving plain text, referencing standard security practices.
+    
+    \item \textbf{Dynamic Leaderboard Sorting:}
+    The leaderboard needed to dynamically sort players based on varying metrics (e.g., total wins, win ratio, or high scores) across multiple different games.
+    \textit{Resolution:} We tackled this by implementing custom Comparator interfaces. This allowed the leaderboard module to fetch raw player statistics and sort the data structures on the fly depending on the specific game context requested by the user.
+\end{itemize}
+
+\section{Future Improvements (With 10 Additional Hours)}
+Given an additional 10 hours of development time, we would focus on expanding the project's scalability and user experience in the following ways:
+
+\begin{enumerate}
+    \item \textbf{Graphical User Interface (GUI):} Transition the current command-line interface to a fully interactive GUI. This would involve utilizing libraries to create clickable game boards, visual login screens, and formatted leaderboard tables, vastly improving user engagement.
+    \item \textbf{Networked Multiplayer Capabilities:} Implement socket programming to allow two users on different machines to play against each other in real-time, moving beyond local hot-seat multiplayer.
+    \item \textbf{Persistent Database Integration:} Replace the current file-based data storage system with a relational database (such as SQLite or PostgreSQL) to manage user accounts and leaderboard statistics more robustly and efficiently.
+\end{enumerate}
+
+\clearpage
+
+\begin{thebibliography}{9}
+
+\bibitem{pygame} 
+Shinners, P., et al. (2023). \textit{Pygame: Python Game Development}. Available at: \url{https://www.pygame.org/} (Accessed: 25 October 2023).
+
+\bibitem{numpy} 
+Harris, C. R., et al. (2020). \textit{Array programming with NumPy}. Nature, 585(7825), 357-362. Available at: \url{https://numpy.org/}
+
+\bibitem{bash_manual} 
+Fox, B., and Ramey, C. (2022). \textit{GNU Bash Reference Manual}. Free Software Foundation. Available at: \url{https://www.gnu.org/software/bash/manual/}
+
+\end{thebibliography}
+\printbibliography
+\end{document}

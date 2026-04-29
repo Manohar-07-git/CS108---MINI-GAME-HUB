@@ -1,0 +1,18 @@
+\contentsline {section}{\numberline {0.1}Intro}{2}{section.0.1}%
+\contentsline {section}{\numberline {0.2}External Libraries}{2}{section.0.2}%
+\contentsline {section}{\numberline {0.3}Features implemented}{3}{section.0.3}%
+\contentsline {subsection}{\numberline {0.3.1}Authentication (main.sh)}{3}{subsection.0.3.1}%
+\contentsline {subsection}{\numberline {0.3.2}Game Menu (game.py)}{3}{subsection.0.3.2}%
+\contentsline {subsection}{\numberline {0.3.3}Games}{3}{subsection.0.3.3}%
+\contentsline {subsection}{\numberline {0.3.4}Technical Requirements}{3}{subsection.0.3.4}%
+\contentsline {subsection}{\numberline {0.3.5}Analytics}{3}{subsection.0.3.5}%
+\contentsline {section}{\numberline {0.4}Explanation of Implimentation of code}{4}{section.0.4}%
+\contentsline {subsection}{\numberline {0.4.1}Authentication System (\texttt {main.sh})}{4}{subsection.0.4.1}%
+\contentsline {subsection}{\numberline {0.4.2}Game Hub and Core Engine (\texttt {game.py} \& Base Class)}{4}{subsection.0.4.2}%
+\contentsline {section}{\numberline {0.5}Game Logic Implementations}{4}{section.0.5}%
+\contentsline {subsection}{\numberline {0.5.1}Tic-Tac-Toe (\texttt {tictactoe.py})}{4}{subsection.0.5.1}%
+\contentsline {subsection}{\numberline {0.5.2}Connect 4 (\texttt {connect4.py})}{4}{subsection.0.5.2}%
+\contentsline {subsection}{\numberline {0.5.3}Othello / Reversi (\texttt {Othello.py})}{5}{subsection.0.5.3}%
+\contentsline {section}{\numberline {0.6}Leaderboard Management (\texttt {leaderboard.sh})}{5}{section.0.6}%
+\contentsline {section}{\numberline {0.7}Hurdles Faced and Resolutions}{5}{section.0.7}%
+\contentsline {section}{\numberline {0.8}Future Improvements (With 10 Additional Hours)}{6}{section.0.8}%
